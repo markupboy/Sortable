@@ -9,14 +9,14 @@ module.exports = (grunt) ->
     coffee:
       compile:
         files:
-          'Sortable.js': 'Sortable.coffee'
+          'dist/Sortable.js': 'Sortable.coffee'
 
     uglify:
       options:
         banner: '/*! <%= pkg.exportName %> <%= pkg.version %> - <%= pkg.license %> | <%= pkg.repository.url %> */\n'
       dist:
         files:
-          '<%= pkg.exportName %>.min.js': ['<%= pkg.exportName %>.js']
+          'dist/<%= pkg.exportName %>.min.js': ['<%= pkg.exportName %>.js']
 
     watch:
       app:

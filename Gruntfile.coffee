@@ -16,7 +16,7 @@ module.exports = (grunt) ->
         banner: '/*! <%= pkg.exportName %> <%= pkg.version %> - <%= pkg.license %> | <%= pkg.repository.url %> */\n'
       dist:
         files:
-          'dist/<%= pkg.exportName %>.min.js': ['<%= pkg.exportName %>.js']
+          'dist/<%= pkg.exportName %>.min.js': ['dist/<%= pkg.exportName %>.js']
 
     watch:
       app:
@@ -36,4 +36,4 @@ module.exports = (grunt) ->
 
 
   # Default task.
-  grunt.registerTask 'default', ['version', 'coffee', 'uglify']
+  grunt.registerTask 'default', ['coffee', 'version', 'uglify']

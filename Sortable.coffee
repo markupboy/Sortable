@@ -58,6 +58,7 @@
       options.handle = options.handle or null
       options.draggable = options.draggable or el.children[0] and el.children[0].nodeName or 'li'
       options.ghostClass = options.ghostClass or 'sortable-ghost'
+      options.focusClass = options.focusClass or 'sortable-focus'
 
       options.onAdd = _bind @, (options.onAdd or noop)
       options.onUpdate = _bind @, (options.onUpdate or noop)
@@ -86,7 +87,6 @@
 
       touchDragOverListeners.push @_onDragOver
 
-
     _applyEffects: ->
       _toggleClass dragEl, @options.ghostClass, true
 
@@ -106,6 +106,8 @@
       if target and evt.type is 'selectstart'
         if target.tagName isnt 'A' and target.tagName isnt 'IMG'
           target.dragDrop()
+
+      _toggleClass target, @options.focusClass, true
 
 
       if target and not dragEl and target.parentNode is el
@@ -127,6 +129,8 @@
           @_onDragStart tapEvt, true
           evt.preventDefault()
 
+        _on @el, 'touchend', @_onTapEnd
+        _on @el, 'mouseup', @_onTapEnd
 
         _on @el, 'dragstart', @_onDragStart
         _on @el, 'dragend', @_onDrop
@@ -145,6 +149,7 @@
         _css ghostEl, 'display', 'none'
 
         target = document.elementFromPoint touchEvt.clientX, touchEvt.clientY
+
         parent = target
         group = @options.group
         i = touchDragOverListeners.length
@@ -190,8 +195,8 @@
 
         ghostEl = target.cloneNode true
 
-        _css ghostEl, 'top', rect.top - parseInt css.marginTop, 10
-        _css ghostEl, 'left', rect.left - parseInt css.marginLeft, 10
+        _css ghostEl, 'top', target.offsetTop - parseInt css.marginTop, 10
+        _css ghostEl, 'left', target.offsetLeft - parseInt css.marginLeft, 10
         _css ghostEl, 'width', rect.width
         _css ghostEl, 'height', rect.height
         _css ghostEl, 'opacity', '0.8'
@@ -277,8 +282,8 @@
         ghostEl.parentNode.removeChild ghostEl if ghostEl
 
 
-
         if dragEl
+          _toggleClass dragEl, @options.focusClass, false
           _toggleClass dragEl, @options.ghostClass, false
 
           if not rootEl.contains dragEl
@@ -306,6 +311,10 @@
 
         activeGroup = null
 
+    _onTapEnd: (evt) ->
+      target = _closest evt.target, @options.draggable, @el
+      _toggleClass target, @options.focusClass, false
+
 
     destroy: ->
       el = @el
@@ -320,6 +329,9 @@
 
       _off el, 'dragover', @_onDragOver
       _off el, 'dragenter', @_onDragOver
+
+      # _off @el, 'touchend', @_onTapEnd
+      # _off @el, 'mouseup', @_onTapEnd
 
       #remove draggable attributes
       Array.prototype.forEach.call el.querySelectorAll('[draggable]'), (el) ->
@@ -424,7 +436,7 @@
     toggleClass: _toggleClass
 
 
-  Sortable.version = '0.2.0';
+  Sortable.version = '0.2.1';
 
   # Export
   return  Sortable

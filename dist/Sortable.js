@@ -36,6 +36,7 @@
         options.handle = options.handle || null;
         options.draggable = options.draggable || el.children[0] && el.children[0].nodeName || 'li';
         options.ghostClass = options.ghostClass || 'sortable-ghost';
+        options.focusClass = options.focusClass || 'sortable-focus';
         options.onAdd = _bind(this, options.onAdd || noop);
         options.onUpdate = _bind(this, options.onUpdate || noop);
         options.onRemove = _bind(this, options.onRemove || noop);
@@ -75,6 +76,7 @@
             target.dragDrop();
           }
         }
+        _toggleClass(target, this.options.focusClass, true);
         if (target && !dragEl && target.parentNode === el) {
           tapEvt = evt;
           target.draggable = true;
@@ -89,6 +91,8 @@
             this._onDragStart(tapEvt, true);
             evt.preventDefault();
           }
+          _on(this.el, 'touchend', this._onTapEnd);
+          _on(this.el, 'mouseup', this._onTapEnd);
           _on(this.el, 'dragstart', this._onDragStart);
           _on(this.el, 'dragend', this._onDrop);
           _on(document, 'dragover', _globalDragOver);
@@ -158,8 +162,8 @@
           css = _css(target);
           ghostRect;
           ghostEl = target.cloneNode(true);
-          _css(ghostEl, 'top', rect.top - parseInt(css.marginTop, 10));
-          _css(ghostEl, 'left', rect.left - parseInt(css.marginLeft, 10));
+          _css(ghostEl, 'top', target.offsetTop - parseInt(css.marginTop, 10));
+          _css(ghostEl, 'left', target.offsetLeft - parseInt(css.marginLeft, 10));
           _css(ghostEl, 'width', rect.width);
           _css(ghostEl, 'height', rect.height);
           _css(ghostEl, 'opacity', '0.8');
@@ -232,6 +236,7 @@
             ghostEl.parentNode.removeChild(ghostEl);
           }
           if (dragEl) {
+            _toggleClass(dragEl, this.options.focusClass, false);
             _toggleClass(dragEl, this.options.ghostClass, false);
             if (!rootEl.contains(dragEl)) {
               rootEl.dispatchEvent(_createEvent('remove', dragEl));
@@ -242,6 +247,12 @@
           }
           return rootEl = dragEl = ghostEl = nextEl = tapEvt = touchEvt = lastEl = lastCSS = activeGroup = null;
         }
+      };
+
+      Sortable.prototype._onTapEnd = function(evt) {
+        var target;
+        target = _closest(evt.target, this.options.draggable, this.el);
+        return _toggleClass(target, this.options.focusClass, false);
       };
 
       Sortable.prototype.destroy = function() {
@@ -368,7 +379,7 @@
       closest: _closest,
       toggleClass: _toggleClass
     };
-    Sortable.version = '0.2.0';
+    Sortable.version = '0.2.1';
     return Sortable;
   });
 

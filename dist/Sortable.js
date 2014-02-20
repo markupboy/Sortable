@@ -37,6 +37,9 @@
         options.draggable = options.draggable || el.children[0] && el.children[0].nodeName || 'li';
         options.ghostClass = options.ghostClass || 'sortable-ghost';
         options.focusClass = options.focusClass || 'sortable-focus';
+        options.ghostTopOffset = options.ghostTopOffset || 0;
+        options.ghostLeftOffset = options.ghostLeftOffset || 0;
+        options.ghostOpacity = options.ghostOpacity || '1';
         options.onAdd = _bind(this, options.onAdd || noop);
         options.onUpdate = _bind(this, options.onUpdate || noop);
         options.onRemove = _bind(this, options.onRemove || noop);
@@ -159,14 +162,15 @@
         activeGroup = this.options.group;
         if (isTouch) {
           rect = target.getBoundingClientRect();
+          console.log(rect);
           css = _css(target);
           ghostRect;
           ghostEl = target.cloneNode(true);
-          _css(ghostEl, 'top', target.offsetTop - parseInt(css.marginTop, 10));
-          _css(ghostEl, 'left', target.offsetLeft - parseInt(css.marginLeft, 10));
+          _css(ghostEl, 'top', rect.top + this.options.ghostTopOffset);
+          _css(ghostEl, 'left', rect.left + this.options.ghostLeftOffset);
           _css(ghostEl, 'width', rect.width);
           _css(ghostEl, 'height', rect.height);
-          _css(ghostEl, 'opacity', '0.8');
+          _css(ghostEl, 'opacity', this.options.ghostOpacity);
           _css(ghostEl, 'position', 'fixed');
           _css(ghostEl, 'zIndex', '100000');
           rootEl.appendChild(ghostEl);

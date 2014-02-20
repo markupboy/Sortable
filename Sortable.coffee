@@ -59,6 +59,9 @@
       options.draggable = options.draggable or el.children[0] and el.children[0].nodeName or 'li'
       options.ghostClass = options.ghostClass or 'sortable-ghost'
       options.focusClass = options.focusClass or 'sortable-focus'
+      options.ghostTopOffset = options.ghostTopOffset or 0
+      options.ghostLeftOffset = options.ghostLeftOffset or 0
+      options.ghostOpacity = options.ghostOpacity or '1'
 
       options.onAdd = _bind @, (options.onAdd or noop)
       options.onUpdate = _bind @, (options.onUpdate or noop)
@@ -190,16 +193,17 @@
 
       if isTouch
         rect = target.getBoundingClientRect()
+        console.log rect
         css = _css(target)
         ghostRect
 
         ghostEl = target.cloneNode true
 
-        _css ghostEl, 'top', target.offsetTop - parseInt css.marginTop, 10
-        _css ghostEl, 'left', target.offsetLeft - parseInt css.marginLeft, 10
+        _css ghostEl, 'top', rect.top + @options.ghostTopOffset
+        _css ghostEl, 'left', rect.left + @options.ghostLeftOffset
         _css ghostEl, 'width', rect.width
         _css ghostEl, 'height', rect.height
-        _css ghostEl, 'opacity', '0.8'
+        _css ghostEl, 'opacity', @options.ghostOpacity
         _css ghostEl, 'position', 'fixed'
         _css ghostEl, 'zIndex', '100000'
 

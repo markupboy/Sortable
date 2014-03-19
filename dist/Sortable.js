@@ -10,8 +10,8 @@
     }
   })(function() {
     "use strict";
-    var Sortable, activeGroup, document, dragEl, expando, ghostEl, lastCSS, lastEl, nextEl, noop, parseInt, rootEl, slice, tapEvt, touchDragOverListeners, touchEvt, win, _bind, _closest, _createEvent, _css, _disableDraggable, _find, _globalDragOver, _off, _on, _silent, _toggleClass, _unsilent;
-    dragEl = ghostEl = rootEl = nextEl = lastEl = lastCSS = activeGroup = tapEvt = touchEvt = void 0;
+    var Sortable, activeGroup, document, dragEl, expando, ghostEl, lastCSS, lastEl, nextEl, noop, parseInt, rootEl, slice, tapEvt, touch, touchDragOverListeners, touchEvt, win, _bind, _closest, _createEvent, _css, _disableDraggable, _find, _globalDragOver, _off, _on, _silent, _toggleClass, _unsilent;
+    dragEl = ghostEl = rootEl = nextEl = lastEl = lastCSS = activeGroup = tapEvt = touchEvt = touch = void 0;
     expando = 'Sortable' + (new Date).getTime();
     win = window;
     document = win.document;
@@ -32,6 +32,7 @@
         var fn;
         this.el = el;
         this.options = options = options || {};
+        this.moved = false;
         options.group = options.group || Math.random();
         options.handle = options.handle || null;
         options.draggable = options.draggable || el.children[0] && el.children[0].nodeName || 'li';
@@ -65,7 +66,7 @@
       };
 
       Sortable.prototype._onTapStart = function(evt) {
-        var el, err, options, target, touch;
+        var el, err, options, target;
         touch = evt.touches && evt.touches[0];
         target = (touch || evt).target;
         options = this.options;
@@ -142,7 +143,8 @@
       };
 
       Sortable.prototype._onTouchMove = function(evt) {
-        var dx, dy, touch;
+        var dx, dy;
+        this.moved = true;
         if (tapEvt) {
           touch = evt.touches[0];
           dx = touch.clientX - tapEvt.clientX;
@@ -254,7 +256,11 @@
       Sortable.prototype._onTapEnd = function(evt) {
         var target;
         target = _closest(evt.target, this.options.draggable, this.el);
-        return _toggleClass(target, this.options.focusClass, false);
+        _toggleClass(target, this.options.focusClass, false);
+        if (target && touch && !this.moved) {
+          target.dispatchEvent(_createEvent('click', target));
+        }
+        return this.moved = false;
       };
 
       Sortable.prototype.destroy = function() {

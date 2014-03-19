@@ -22,7 +22,8 @@
   lastCSS =
   activeGroup =
   tapEvt =
-  touchEvt = undefined
+  touchEvt =
+  touch = undefined
 
   expando = 'Sortable' + (new Date).getTime()
 
@@ -52,6 +53,7 @@
     constructor: (el, options) ->
       @el = el # root element
       @options = options = options or {}
+      @moved = false
 
       # Defaults
       options.group = options.group or Math.random()
@@ -89,6 +91,7 @@
       _on el, 'dragenter', @_onDragOver
 
       touchDragOverListeners.push @_onDragOver
+
 
     _applyEffects: ->
       _toggleClass dragEl, @options.ghostClass, true
@@ -173,6 +176,7 @@
 
 
     _onTouchMove: (evt) ->
+      @moved = true
       if tapEvt
         touch = evt.touches[0]
         dx = touch.clientX - tapEvt.clientX
@@ -315,6 +319,8 @@
     _onTapEnd: (evt) ->
       target = _closest evt.target, @options.draggable, @el
       _toggleClass target, @options.focusClass, false
+      target.dispatchEvent _createEvent 'click', target if target and touch and not @moved
+      @moved = false
 
 
     destroy: ->

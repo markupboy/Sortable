@@ -162,12 +162,10 @@
         activeGroup = this.options.group;
         if (isTouch) {
           rect = target.getBoundingClientRect();
-          console.log(rect);
           css = _css(target);
-          ghostRect;
           ghostEl = target.cloneNode(true);
-          _css(ghostEl, 'top', rect.top + this.options.ghostTopOffset);
-          _css(ghostEl, 'left', rect.left + this.options.ghostLeftOffset);
+          _css(ghostEl, 'top', rect.top + this.options.ghostTopOffset - parseInt(css.marginTop, 10));
+          _css(ghostEl, 'left', rect.left + this.options.ghostLeftOffset - parseInt(css.marginTop, 10));
           _css(ghostEl, 'width', rect.width);
           _css(ghostEl, 'height', rect.height);
           _css(ghostEl, 'opacity', this.options.ghostOpacity);

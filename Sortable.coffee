@@ -193,14 +193,12 @@
 
       if isTouch
         rect = target.getBoundingClientRect()
-        console.log rect
-        css = _css(target)
-        ghostRect
+        css = _css target
 
         ghostEl = target.cloneNode true
 
-        _css ghostEl, 'top', rect.top + @options.ghostTopOffset
-        _css ghostEl, 'left', rect.left + @options.ghostLeftOffset
+        _css ghostEl, 'top', rect.top + @options.ghostTopOffset - parseInt(css.marginTop, 10)
+        _css ghostEl, 'left', rect.left + @options.ghostLeftOffset - parseInt(css.marginTop, 10)
         _css ghostEl, 'width', rect.width
         _css ghostEl, 'height', rect.height
         _css ghostEl, 'opacity', @options.ghostOpacity
@@ -284,7 +282,6 @@
         evt.stopPropagation()
 
         ghostEl.parentNode.removeChild ghostEl if ghostEl
-
 
         if dragEl
           _toggleClass dragEl, @options.focusClass, false

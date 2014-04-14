@@ -51,6 +51,7 @@
 
   class Sortable
     constructor: (el, options) ->
+      return unless el?
       @el = el # root element
       @options = options = options or {}
       @moved = false

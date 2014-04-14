@@ -30,6 +30,9 @@
     Sortable = (function() {
       function Sortable(el, options) {
         var fn;
+        if (el == null) {
+          return;
+        }
         this.el = el;
         this.options = options = options || {};
         this.moved = false;
